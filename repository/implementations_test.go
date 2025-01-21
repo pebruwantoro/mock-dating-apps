@@ -82,6 +82,74 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
+func TestUpdateUser(t *testing.T) {
+	cases := []testCase{
+		{
+			name: "success",
+			request: User{
+				UUID:      "uuid",
+				Email:     "email",
+				Username:  "username",
+				Password:  "password",
+				IsPremium: true,
+			},
+			response: User{
+				UUID:      "uuid",
+				Email:     "email",
+				Username:  "username",
+				Password:  "password",
+				IsPremium: true,
+			},
+			mockFunc: func(m sqlmock.Sqlmock) {
+				m.ExpectExec(regexp.QuoteMeta(`
+				UPDATE users 
+					SET is_premium = $1,
+					updated_at = NOW()
+					WHERE uuid = $2;
+				`)).WithArgs(true, "uuid").
+					WillReturnResult(sqlmock.NewResult(1, 1))
+			},
+			err: nil,
+		},
+		{
+			name: "error",
+			request: User{
+				UUID:      "uuid",
+				Email:     "email",
+				Username:  "username",
+				Password:  "password",
+				IsPremium: true,
+			},
+			response: User{},
+			mockFunc: func(m sqlmock.Sqlmock) {
+				m.ExpectExec(regexp.QuoteMeta(`
+				UPDATE users
+					SET is_premium = $1,
+					updated_at = NOW()
+					WHERE uuid = $2;
+				`)).WithArgs(true, "uuid").
+					WillReturnError(errors.New("error"))
+			},
+			err: errors.New("error"),
+		},
+	}
+
+	for _, tc := range cases {
+		db, mock, _ := sqlmock.New()
+		defer db.Close()
+
+		repo := &Repository{
+			Db: db,
+		}
+
+		tc.mockFunc(mock)
+
+		res, err := repo.UpdateUser(context.Background(), tc.request.(User))
+		assert.Equal(t, res, tc.response.(User))
+		assert.Equal(t, err, tc.err)
+	}
+}
+
 func TestGetUserByID(t *testing.T) {
 	timeNow := time.Now()
 

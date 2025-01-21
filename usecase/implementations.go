@@ -108,3 +108,30 @@ func (u *Usecase) Swipe(ctx context.Context, request dto.SwipeRequest) (result d
 
 	return
 }
+
+func (u *Usecase) PurchasePremiumPackage(ctx context.Context, request dto.PurchasePremiumPackageRequest) (result dto.PurchasePremiumPackageResponse, err error) {
+	var user repository.User
+
+	user, err = u.Repository.GetUserByID(ctx, request.UserID)
+	if err != nil {
+		return
+	}
+
+	if user.IsPremium {
+		err = errors.New("users already bought the premium package")
+		return
+	}
+
+	user, err = u.Repository.UpdateUser(ctx, repository.User{
+		UUID:      request.UserID,
+		IsPremium: true,
+	})
+
+	if err != nil {
+		return
+	}
+
+	result.Id = request.UserID
+
+	return
+}

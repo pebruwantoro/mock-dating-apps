@@ -25,6 +25,25 @@ func (r *Repository) CreateUser(ctx context.Context, input User) (result User, e
 	return
 }
 
+func (r *Repository) UpdateUser(ctx context.Context, input User) (result User, err error) {
+	_, err = r.Db.ExecContext(ctx, `
+		UPDATE users 
+		SET is_premium = $1,
+		updated_at = NOW()
+		WHERE uuid = $2;
+	`,
+		input.IsPremium,
+		input.UUID,
+	)
+	if err != nil {
+		return
+	}
+
+	result = input
+
+	return
+}
+
 func (r *Repository) GetUserByID(ctx context.Context, id string) (result User, err error) {
 	err = r.Db.QueryRowContext(ctx, `
         SELECT uuid, email, username, password, is_premium, created_at

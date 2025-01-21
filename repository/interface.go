@@ -5,6 +5,7 @@ import "context"
 //go:generate mockgen -destination=mocks/repository.go -package=mocks . RepositoryInterface
 type RepositoryInterface interface {
 	CreateUser(ctx context.Context, input User) (User, error)
+	UpdateUser(ctx context.Context, input User) (User, error)
 	GetUserByID(ctx context.Context, id string) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByUsername(ctx context.Context, username string) (User, error)

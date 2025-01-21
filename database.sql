@@ -8,6 +8,7 @@ CREATE TABLE users (
     password TEXT NOT NULL,
     is_premium BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW(),
     CONSTRAINT unique_username UNIQUE (username),
     CONSTRAINT unique_email UNIQUE (email)
 );

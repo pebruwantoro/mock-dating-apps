@@ -95,3 +95,29 @@ func (s *Server) Swipe(c echo.Context) error {
 		Data:    result,
 	})
 }
+
+func (s *Server) PurchasePremiumPackage(c echo.Context) error {
+	ctx := context.Background()
+	req := dto.PurchasePremiumPackageRequest{}
+
+	claims, ok := c.Get("claims").(*helper.Claims)
+	if !ok || claims == nil {
+		return c.JSON(http.StatusUnauthorized, "Unauthorized: Invalid or missing claims")
+	}
+
+	req.UserID = claims.UUID
+
+	result, err := s.Usecase.PurchasePremiumPackage(ctx, req)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.BaseResponse{
+			Success: false,
+			Message: fmt.Sprintf("error: %s", err.Error()),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.BaseResponse{
+		Success: true,
+		Message: "success purchase premium package",
+		Data:    result,
+	})
+}

@@ -23,6 +23,7 @@ func main() {
 	users.POST("/sign-up", server.SignUp)
 	users.POST("/login", server.Login)
 	users.POST("/swipe", server.Swipe, JWTMiddleware(config.JWT_SECRET_KEY))
+	users.POST("/purchase", server.PurchasePremiumPackage, JWTMiddleware(config.JWT_SECRET_KEY))
 
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"*"},

@@ -13,8 +13,12 @@ type SwipeResponse struct {
 	Id string `json:"id"`
 }
 
+type PurchasePremiumPackageResponse struct {
+	Id string `json:"id"`
+}
+
 type BaseResponse struct {
-	Success bool        `json:"success`
+	Success bool        `json:"success"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data`
+	Data    interface{} `json:"data"`
 }

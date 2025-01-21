@@ -17,3 +17,8 @@ type SwipeRequest struct {
 	Direction string `json:"direction"`
 	IsPremium bool   `json:"is_premium"`
 }
+
+type PurchasePremiumPackageRequest struct {
+	UserID string `json:"user_id"`
+	Amount int    `json:"amount"`
+}
